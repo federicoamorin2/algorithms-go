@@ -5,7 +5,7 @@ import (
 )
 
 // BST performs BST-AVL sort
-func BST(lista []float32) []float32 {
+func BST(lista []int) []int {
 	head := datastructures.NewNode(lista[0])
 	tree := datastructures.Tree{Head: &head}
 	for i, v := range lista {
@@ -14,6 +14,7 @@ func BST(lista []float32) []float32 {
 			datastructures.InsertAVL(&presentNode, tree.Head, &tree)
 		}
 	}
-	var lista2 []float32
-	return datastructures.DepthFristTraverse(tree.Head, lista2, "in")
+	sortedList := make([]int, len(lista))
+	sortedList, _ = datastructures.DepthFristTraverse(tree.Head, sortedList, 0, "in")
+	return sortedList
 }
