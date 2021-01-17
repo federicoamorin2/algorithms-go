@@ -244,21 +244,24 @@ func findMin(presentNode *Node) *Node {
 }
 
 // DepthFristTraverse traverses tree, order depends on order argument.
-func DepthFristTraverse(presentNode *Node, lista []float32, order string) []float32 {
+func DepthFristTraverse(presentNode *Node, lista []int, listIndex int, order string) ([]int, int) {
 	if order == "pre" {
-		lista = append(lista, presentNode.value)
+		lista[listIndex] = presentNode.value
+		listIndex++
 	}
 	if presentNode.leftChild != nil {
-		lista = DepthFristTraverse(presentNode.leftChild, lista, order)
+		lista, listIndex = DepthFristTraverse(presentNode.leftChild, lista, listIndex, order)
 	}
 	if order == "in" {
-		lista = append(lista, presentNode.value)
+		lista[listIndex] = presentNode.value
+		listIndex++
 	}
 	if presentNode.rightChild != nil {
-		lista = DepthFristTraverse(presentNode.rightChild, lista, order)
+		lista, listIndex = DepthFristTraverse(presentNode.rightChild, lista, listIndex, order)
 	}
 	if order == "post" {
-		lista = append(lista, presentNode.value)
+		lista[listIndex] = presentNode.value
+		listIndex++
 	}
-	return lista
+	return lista, listIndex
 }
