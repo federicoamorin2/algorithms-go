@@ -5,7 +5,7 @@ type Node struct {
 	parent     *Node
 	leftChild  *Node
 	rightChild *Node
-	value      float32
+	value      int
 	height     int
 	balance    int
 }
@@ -16,7 +16,7 @@ type Tree struct {
 }
 
 // NewNode is a intialization function for nodes
-func NewNode(value float32) Node {
+func NewNode(value int) Node {
 	var newNode Node
 	newNode.value = value
 	newNode.height = 0
@@ -55,6 +55,7 @@ func InsertAVL(nodeInserted *Node, startNode *Node, tree *Tree) {
 func balanceTree(startNode *Node, tree *Tree) {
 
 	if startNode.balance > 1 {
+
 		if startNode.leftChild.balance > 0 {
 			if startNode.parent == nil {
 				leftRotate(startNode)
@@ -111,6 +112,9 @@ func leftRotate(presentNode *Node) {
 	B.parent = A.parent
 	A.parent = B
 	A.leftChild = B.rightChild
+	if B.rightChild != nil {
+		B.rightChild.parent = A
+	}
 	B.rightChild = A
 	computeBalanceFactor(A)
 	computeBalanceFactor(B)
@@ -135,6 +139,9 @@ func rightRotate(presentNode *Node) {
 	B.parent = A.parent
 	A.parent = B
 	A.rightChild = B.leftChild
+	if B.leftChild != nil {
+		B.leftChild.parent = A
+	}
 	B.leftChild = A
 	computeBalanceFactor(A)
 	computeBalanceFactor(B)
@@ -174,7 +181,7 @@ func Max(x, y int) int {
 	return x
 }
 
-func findNode(value float32, presentNode *Node) *Node {
+func findNode(value int, presentNode *Node) *Node {
 	// If value is equal to present node value return present node.
 	if presentNode.value == value {
 		return presentNode
@@ -191,7 +198,7 @@ func findNode(value float32, presentNode *Node) *Node {
 
 }
 
-func deleteNode(value float32, startNode *Node, tree Tree) string {
+func deleteNode(value int, startNode *Node, tree *Tree) string {
 	// Find node in tree if it doesn't exist return not found.
 	foundNode := findNode(value, startNode)
 	if foundNode == nil {
@@ -208,10 +215,10 @@ func deleteNode(value float32, startNode *Node, tree Tree) string {
 
 	// If found node has child nodes re-insert them in tree
 	if foundNode.leftChild != nil {
-		InsertAVL(foundNode.leftChild, startNode, &tree)
+		InsertAVL(foundNode.leftChild, startNode, tree)
 	}
 	if foundNode.rightChild != nil {
-		InsertAVL(foundNode.rightChild, startNode, &tree)
+		InsertAVL(foundNode.rightChild, startNode, tree)
 	}
 	return "Removed"
 }
