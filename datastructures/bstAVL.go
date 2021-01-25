@@ -150,15 +150,25 @@ func rightRotate(presentNode *Node) {
 // Adjust the balance factor with new insertion
 func computeBalanceFactor(presentNode *Node) {
 	if presentNode.rightChild != nil && presentNode.leftChild != nil {
-		presentNode.balance = presentNode.leftChild.height - presentNode.rightChild.height
-		presentNode.height = Max(presentNode.leftChild.height, presentNode.rightChild.height) + 1
+		// Calculate the balance factor.
+		presentNode.balance =
+			presentNode.leftChild.height - presentNode.rightChild.height
+
+		// Calculate the height of the node.
+		presentNode.height = Max(
+			presentNode.leftChild.height, presentNode.rightChild.height,
+		) + 1
+
 	} else if presentNode.rightChild == nil && presentNode.leftChild != nil {
+		// Compute height and balance.
 		presentNode.height = presentNode.leftChild.height + 1
 		presentNode.balance = presentNode.height
 	} else if presentNode.rightChild != nil && presentNode.leftChild == nil {
+		// Compute height and balance.
 		presentNode.height = presentNode.rightChild.height + 1
 		presentNode.balance = -presentNode.height
 	} else {
+		// Set heigh and balance to zero.
 		presentNode.height = 0
 		presentNode.balance = 0
 	}
@@ -250,20 +260,25 @@ func findMin(presentNode *Node) *Node {
 }
 
 // DepthFristTraverse traverses tree, order depends on order argument.
-func DepthFristTraverse(presentNode *Node, lista []int, listIndex int, order string) ([]int, int) {
+func DepthFristTraverse(
+	presentNode *Node, lista []int, listIndex int, order string,
+) ([]int, int) {
 	if order == "pre" {
 		lista[listIndex] = presentNode.value
 		listIndex++
 	}
 	if presentNode.leftChild != nil {
-		lista, listIndex = DepthFristTraverse(presentNode.leftChild, lista, listIndex, order)
+		lista, listIndex = DepthFristTraverse(
+			presentNode.leftChild, lista, listIndex, order)
 	}
 	if order == "in" {
 		lista[listIndex] = presentNode.value
 		listIndex++
 	}
 	if presentNode.rightChild != nil {
-		lista, listIndex = DepthFristTraverse(presentNode.rightChild, lista, listIndex, order)
+		lista, listIndex = DepthFristTraverse(
+			presentNode.rightChild, lista, listIndex, order,
+		)
 	}
 	if order == "post" {
 		lista[listIndex] = presentNode.value
