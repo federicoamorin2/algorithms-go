@@ -29,14 +29,15 @@ func CreateDLL(node *NodeDLL) DoubleLinkedList {
 
 // TraverseDLL traverses linked list going forwards.
 func TraverseDLL(list DoubleLinkedList, direction string) {
-
-	if direction == "forwards" {
-		presentNode := list.Head
-		traverseForwardsDLL(presentNode)
-	} else if direction == "backwords" {
-		presentNode := list.Tail
-		traverseBackwordsDLL(presentNode)
+	directionToFunc := map[string]func(*NodeDLL){
+		"forwards":  traverseForwardsDLL,
+		"backwards": traverseBackwardsDLL,
 	}
+	directionToEnd := map[string]*NodeDLL{
+		"forwards":  list.Head,
+		"backwards": list.Tail,
+	}
+	directionToFunc[direction](directionToEnd[direction])
 }
 
 func traverseForwardsDLL(presentNode *NodeDLL) {
@@ -46,10 +47,10 @@ func traverseForwardsDLL(presentNode *NodeDLL) {
 	}
 }
 
-func traverseBackwordsDLL(presentNode *NodeDLL) {
+func traverseBackwardsDLL(presentNode *NodeDLL) {
 	fmt.Println(presentNode.Value)
 	if presentNode.Past != nil {
-		traverseBackwordsDLL(presentNode.Past)
+		traverseBackwardsDLL(presentNode.Past)
 	}
 }
 
