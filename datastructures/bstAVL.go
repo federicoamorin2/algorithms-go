@@ -181,17 +181,23 @@ func Max(x, y int) int {
 	return x
 }
 
-func findNode(value int, presentNode *Node) *Node {
+// GetValue returns the value of a given node.
+func GetValue(node *Node) int {
+	return node.value
+}
+
+// FindNode is used to find a node with a given value in a tree.
+func FindNode(value int, presentNode *Node) *Node {
 	// If value is equal to present node value return present node.
 	if presentNode.value == value {
 		return presentNode
 		// If value is greater than present node value and present node has
 		// a right child recurse into right child.
-	} else if presentNode.value >= value && presentNode.rightChild != nil {
-		return findNode(value, presentNode.rightChild)
+	} else if presentNode.value <= value && presentNode.rightChild != nil {
+		return FindNode(value, presentNode.rightChild)
 		// Same for right side.
 	} else if presentNode.leftChild != nil {
-		return findNode(value, presentNode.leftChild)
+		return FindNode(value, presentNode.leftChild)
 	}
 	// If all cases above fail node was not found and nil is returned
 	return nil
@@ -200,7 +206,7 @@ func findNode(value int, presentNode *Node) *Node {
 
 func deleteNode(value int, startNode *Node, tree *Tree) string {
 	// Find node in tree if it doesn't exist return not found.
-	foundNode := findNode(value, startNode)
+	foundNode := FindNode(value, startNode)
 	if foundNode == nil {
 		return "Not found"
 	}
