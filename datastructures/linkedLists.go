@@ -15,15 +15,28 @@ type NodeDLL struct {
 	Past  *NodeDLL
 }
 
-// DoubleLinkedList contains a pointer to the head of a DL-list
+// DoubleLinkedList contains a pointer to the head and tail of a DL-list
 type DoubleLinkedList struct {
-	head *NodeDLL
+	Head *NodeDLL
+	Tail *NodeDLL
+}
+
+// CreateDLL is a utility function to create a DLL
+func CreateDLL(node *NodeDLL) DoubleLinkedList {
+	list := DoubleLinkedList{Head: node, Tail: node}
+	return list
 }
 
 // TraverseDLL traverses linked list going forwards.
-func TraverseDLL(list DoubleLinkedList) {
-	presentNode := list.head
-	traverseForwardsDLL(presentNode)
+func TraverseDLL(list DoubleLinkedList, direction string) {
+
+	if direction == "forwards" {
+		presentNode := list.Head
+		traverseForwardsDLL(presentNode)
+	} else if direction == "backwords" {
+		presentNode := list.Tail
+		traverseBackwordsDLL(presentNode)
+	}
 }
 
 func traverseForwardsDLL(presentNode *NodeDLL) {
@@ -41,46 +54,63 @@ func traverseBackwordsDLL(presentNode *NodeDLL) {
 }
 
 // AppendDLL adds element to the end of a double linked list
-func AppendDLL(presentNode *NodeDLL, insertedNode *NodeDLL) {
+func AppendDLL(list *DoubleLinkedList, insertedNode *NodeDLL) {
+	presentNode := list.Head
+	appendDLL(presentNode, insertedNode)
+	list.Tail = insertedNode
+}
+
+func appendDLL(presentNode *NodeDLL, insertedNode *NodeDLL) {
 	if presentNode.Next != nil {
-		AppendDLL(presentNode.Next, insertedNode)
+		appendDLL(presentNode.Next, insertedNode)
 	} else {
 		presentNode.Next = insertedNode
 		insertedNode.Past = presentNode
 	}
 }
 
-func insertDLL(presentNode *NodeDLL, insertedNode *NodeDLL) {
-	if presentNode.Next != nil {
-		insertDLL(presentNode.Next, insertedNode)
-	} else {
-		presentNode.Next = insertedNode
-		insertedNode.Past = presentNode
-	}
+// InsertDLL adds element to the end of a double linked list
+func InsertDLL(list *DoubleLinkedList, insertedNode *NodeDLL) {
+	presentNode := list.Head
+	insertedNode.Next = presentNode
+	presentNode.Past = insertedNode
+	list.Head = insertedNode
+
 }
 
-// RemoveDLL removes node of given value if found in linked list
-func RemoveDLL(Value int, headNode *NodeDLL) string {
+// RemoveFromDLL removes node of given value if found in linked list
+func RemoveFromDLL(Value int, list *DoubleLinkedList) {
+	presentNode := list.Head
+	foundNode, validation := removeDLL(Value, presentNode)
+	if validation[2] == false {
+		list.Head = foundNode.Next
+	}
+	if validation[1] == false {
+		list.Tail = foundNode.Past
+	}
+
+}
+func removeDLL(Value int, headNode *NodeDLL) (NodeDLL, [3]bool) {
 	foundNode, err := findNodeDLL(Value, headNode)
+	validation := [3]bool{false, false, false}
 	if err {
-		return "Node not found"
+		return foundNode, validation
 	}
-	if foundNode.Past != nil {
-		foundNode.Past.Next = foundNode.Next
-	} else {
-		// found node is head of list
-		headNode.Next = nil
-		headNode.Past = nil
-		fmt.Println("cheguei aqui")
-	}
+	validation[0] = true
 	if foundNode.Next != nil {
+		validation[1] = true
 		foundNode.Next.Past = foundNode.Past
 	}
-	foundNode.Next = nil
-	foundNode.Past = nil
-	return "Removed value"
+	if foundNode.Past != nil {
+		validation[2] = true
+		foundNode.Past.Next = foundNode.Next
+	}
+	return foundNode, validation
+
 }
 
+// findNodeDLL is a utility function used to check if a node existis
+// and return it if possible
 func findNodeDLL(Value int, presentNode *NodeDLL) (NodeDLL, bool) {
 	if presentNode.Value == Value {
 		return *presentNode, false
