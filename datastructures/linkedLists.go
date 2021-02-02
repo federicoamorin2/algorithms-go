@@ -10,49 +10,77 @@ type NodeSLL struct {
 
 // SinglyLinkedList contains a pointer to the head of a SL-list.
 type SinglyLinkedList struct {
-	head *NodeSLL
+	Head *NodeSLL
+}
+
+// CreateSLL is a utility function to create a DLL
+func CreateSLL(value int) NodeSLL {
+	node := NodeSLL{value: value, Next: nil}
+	return node
+}
+
+// AppendSLL adds element to singly linked list
+func AppendSLL(list *SinglyLinkedList, AddedNode *NodeSLL) {
+	head := list.Head
+	appendSLL(head, AddedNode)
+}
+
+func appendSLL(PresentNode *NodeSLL, AddedNode *NodeSLL) {
+	if PresentNode.Next != nil {
+		appendSLL(PresentNode.Next, AddedNode)
+		return
+	}
+	PresentNode.Next = AddedNode
 }
 
 // TraverseSLL traverses a single linked list in a forward looking fashion.
-func TraverseSLL(headNode *NodeSLL) {
-	fmt.Println(headNode.value)
+func TraverseSLL(List *SinglyLinkedList) {
+	traverseSLL(List.Head)
+}
+
+func traverseSLL(PresentNode *NodeSLL) {
+	fmt.Println(PresentNode.value)
 
 	// If node has child recurse into it.
-	if headNode.Next != nil {
-		TraverseSLL(headNode.Next)
+	if PresentNode.Next != nil {
+		traverseSLL(PresentNode.Next)
 	}
 }
 
-// findNodeSLL finds and returns, if possible, a node of a given value.
-func findNodeSLL(value int, headNode *NodeSLL) (NodeSLL, bool) {
-	if value == headNode.value {
-		return *headNode, true
+// FindNodeSLL finds and returns, if possible, a node of a given value.
+func FindNodeSLL(value int, List *SinglyLinkedList) NodeSLL {
+	node, _ := findNodeSLL(value, List.Head)
+	return node
+}
+
+func findNodeSLL(value int, PresentNode *NodeSLL) (NodeSLL, bool) {
+	if value == PresentNode.value {
+		return *PresentNode, true
 	}
-	if headNode.Next != nil {
-		return findNodeSLL(value, headNode.Next)
+	if PresentNode.Next != nil {
+		return findNodeSLL(value, PresentNode.Next)
 	}
-	return *headNode, false
+	return *PresentNode, false
 }
 
 // RemoveFromSLL removes a node with a given value from a singly linked list.
 func RemoveFromSLL(value int, list *SinglyLinkedList) {
-	removedHead := removeFromSLL(value, list.head)
+	removedHead := removeFromSLL(value, list.Head)
 	if removedHead {
-		list.head = list.head.Next
+		list.Head = list.Head.Next
 	}
 }
 
-func removeFromSLL(value int, headNode *NodeSLL) bool {
-	if headNode.value == value {
-		headNode.Next = nil
+func removeFromSLL(value int, PresentNode *NodeSLL) bool {
+	if PresentNode.value == value {
 		return true
 	}
-	if headNode.Next != nil {
-		if headNode.Next.value == value {
-			headNode.Next = headNode.Next.Next
+	if PresentNode.Next != nil {
+		if PresentNode.Next.value == value {
+			PresentNode.Next = PresentNode.Next.Next
 			return false
 		}
-		return removeFromSLL(value, headNode)
+		return removeFromSLL(value, PresentNode.Next)
 	}
 	return false
 }
@@ -119,7 +147,7 @@ func appendDLL(presentNode *NodeDLL, insertedNode *NodeDLL) {
 	}
 }
 
-// InsertDLL adds element to the end of a double linked list
+// InsertDLL adds element to the begining of a double linked list
 func InsertDLL(list *DoubleLinkedList, insertedNode *NodeDLL) {
 	presentNode := list.Head
 	insertedNode.Next = presentNode
@@ -140,8 +168,8 @@ func RemoveFromDLL(Value int, list *DoubleLinkedList) {
 	}
 
 }
-func removeDLL(Value int, headNode *NodeDLL) (NodeDLL, [3]bool) {
-	foundNode, err := findNodeDLL(Value, headNode)
+func removeDLL(Value int, PresentNode *NodeDLL) (NodeDLL, [3]bool) {
+	foundNode, err := findNodeDLL(Value, PresentNode)
 	validation := [3]bool{false, false, false}
 	if err {
 		return foundNode, validation
