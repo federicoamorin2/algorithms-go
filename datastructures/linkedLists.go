@@ -8,6 +8,55 @@ type NodeSLL struct {
 	Next  *NodeSLL
 }
 
+// SinglyLinkedList contains a pointer to the head of a SL-list.
+type SinglyLinkedList struct {
+	head *NodeSLL
+}
+
+// TraverseSLL traverses a single linked list in a forward looking fashion.
+func TraverseSLL(headNode *NodeSLL) {
+	fmt.Println(headNode.value)
+
+	// If node has child recurse into it.
+	if headNode.Next != nil {
+		TraverseSLL(headNode.Next)
+	}
+}
+
+// findNodeSLL finds and returns, if possible, a node of a given value.
+func findNodeSLL(value int, headNode *NodeSLL) (NodeSLL, bool) {
+	if value == headNode.value {
+		return *headNode, true
+	}
+	if headNode.Next != nil {
+		return findNodeSLL(value, headNode.Next)
+	}
+	return *headNode, false
+}
+
+// RemoveFromSLL removes a node with a given value from a singly linked list.
+func RemoveFromSLL(value int, list *SinglyLinkedList) {
+	removedHead := removeFromSLL(value, list.head)
+	if removedHead {
+		list.head = list.head.Next
+	}
+}
+
+func removeFromSLL(value int, headNode *NodeSLL) bool {
+	if headNode.value == value {
+		headNode.Next = nil
+		return true
+	}
+	if headNode.Next != nil {
+		if headNode.Next.value == value {
+			headNode.Next = headNode.Next.Next
+			return false
+		}
+		return removeFromSLL(value, headNode)
+	}
+	return false
+}
+
 // NodeDLL is the basic building block for double linked list
 type NodeDLL struct {
 	Value int
